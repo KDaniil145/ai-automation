@@ -1,0 +1,335 @@
+{
+  "name": "ParcelBot | WF1 | Calculate & Save   Копировать",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "parcelbot-parcel",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a07761ed-7d59-403e-b628-f28e9c306453",
+      "name": "Webhook",
+      "webhookId": "5271dce4-94b5-4907-9332-716b39bc4508"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst data = $input.first().json.body ?? {}\n\nfunction invalid(message) {\n  return [{\n    json: {\n      valid: false,\n      error: {\n        code: \"VALIDATION_ERROR\",\n        message\n      }\n    }\n  }]\n}\n\nconst { action, weight, priority } = data\n\nif (![\"calculate\", \"save\"].includes(action)) {\n  return invalid(\"Неизвестное действие\")\n}\n\nif (typeof weight !== \"number\" ||\n    !Number.isFinite(weight) || weight <= 0) {\n  return invalid(\"Вес должен быть положительным числом\")\n}\n\nif (typeof priority !== \"boolean\") {\n  return invalid(\"Приоритет должен быть true или false\")\n}\n\nconst category = weight > 10\n  ? \"heavy\"\n  : priority ? \"express\" : \"standard\"\n\nif (action === \"calculate\") {\n  return [{\n    json: {\n      valid: true,\n      action,\n      category\n    }\n  }]\n}\n\nconst { name, shippingDate } = data\n\nif (typeof name !== \"string\" ||\n    !name.trim() || name.trim().length > 80) {\n  return invalid(\"Название должно содержать от 1 до 80 символов\")\n}\n\nif (typeof shippingDate !== \"string\" ||\n    !/^\\d{4}-\\d{2}-\\d{2}$/.test(shippingDate) ||\n    !Number.isFinite(Date.parse(shippingDate)) ||\n    new Date(shippingDate).toISOString().slice(0, 10) !== shippingDate) {\n  return invalid(\"Некорректная дата отправки\")\n}\n\nreturn [{\n  json: {\n    valid: true,\n    action,\n    parcel: {\n      name: name.trim(),\n      weight,\n      priority,\n      category,\n      shippingDate\n    }\n  }\n}]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "93166b66-cb8e-497e-813d-077845644c75",
+      "name": "Validate & Classify"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "=\n{{ JSON.stringify({ category: $json.category }) }}\n",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        736,
+        -160
+      ],
+      "id": "54d01519-d56c-4260-9eb2-6aa086963a77",
+      "name": "Return Result"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.valid ? $json.action : 'error' }}",
+                    "rightValue": "calculate",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "95211b15-370a-4acc-a588-690d10571d6e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "calculate"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "d3c5993c-43f4-480b-a0a7-dcf1469f0de7",
+                    "leftValue": "={{ $json.valid ? $json.action : 'error' }}",
+                    "rightValue": "save",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "save"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "0ec041ba-c048-4f86-948e-7d08dfa52a49",
+                    "leftValue": "={{ $json.valid ? $json.action : 'error' }}",
+                    "rightValue": "error",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "error"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.5,
+      "position": [
+        448,
+        -16
+      ],
+      "id": "41cda415-d3f6-48b9-b19b-1a050b118b57",
+      "name": "Route Action"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "tHhqGG6Mv43acvoO",
+          "mode": "list",
+          "cachedResultName": "parcelbot_parcels",
+          "cachedResultUrl": "/projects/P6Qb4RFshRlGkMJ3/datatables/tHhqGG6Mv43acvoO"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "priority": "={{ $json.parcel.priority }}",
+            "name": "={{ $json.parcel.name }}",
+            "weight": "={{ $json.parcel.weight }}",
+            "category": "={{ $json.parcel.category }}",
+            "shipping_date": "={{ $json.parcel.shippingDate }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "weight",
+              "displayName": "weight",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "shipping_date",
+              "displayName": "shipping_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        0
+      ],
+      "id": "e6389009-51a6-4e79-acde-ff96a4921fad",
+      "name": "Save Parcel"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "=\n{{ JSON.stringify({\n  parcel: {\n    id: $json.id,\n    name: $json.name,\n    weight: $json.weight,\n    priority: $json.priority,\n    category: $json.category,\n    shippingDate: $json.shipping_date\n  }\n}) }}\n",
+        "options": {
+          "responseCode": 201
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        944,
+        0
+      ],
+      "id": "4e7c85ac-8f7f-4950-85fd-ceb7d73f67c4",
+      "name": "Return Saved Parcel"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "=\n{{ JSON.stringify({ error: $json.error }) }}\n",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        736,
+        160
+      ],
+      "id": "95256db1-ec07-494f-a336-c44eb3588d14",
+      "name": "Return Validation Error"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate & Classify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Classify": {
+      "main": [
+        [
+          {
+            "node": "Route Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Action": {
+      "main": [
+        [
+          {
+            "node": "Return Result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Save Parcel",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Validation Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Parcel": {
+      "main": [
+        [
+          {
+            "node": "Return Saved Parcel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "48bb23a6-124b-4787-bb5e-ca2f9454c748",
+  "meta": {
+    "instanceId": "68dbbb4e8fa686c3fd4e9982ade6836edb66976f207553e7ac22df961581c78c"
+  },
+  "nodeGroups": [],
+  "id": "GvCbHMPwkVcX2f9p",
+  "tags": []
+}

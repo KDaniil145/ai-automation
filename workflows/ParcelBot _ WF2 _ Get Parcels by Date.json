@@ -1,0 +1,221 @@
+{
+  "name": "ParcelBot | WF2 | Get Parcels by Date",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "parcelbot-parcels",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "156a0c1a-de83-4c9a-a55f-7413bc80a9e3",
+      "name": "Webhook",
+      "webhookId": "302463b1-fad1-492a-9f9c-c517692402f9"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst date = $input.first().json.query?.date\n\nfunction invalid(message) {\n  return [{\n    json: {\n      valid: false,\n      error: {\n        code: \"VALIDATION_ERROR\",\n        message\n      }\n    }\n  }]\n}\n\nif (typeof date !== \"string\" ||\n    !/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) {\n  return invalid(\"Дата должна быть в формате YYYY-MM-DD\")\n}\n\nconst parsed = new Date(`${date}T00:00:00.000Z`)\n\nif (Number.isNaN(parsed.getTime()) ||\n    parsed.toISOString().slice(0, 10) !== date) {\n  return invalid(\"Некорректная дата отправки\")\n}\n\nreturn [{\n  json: {\n    valid: true,\n    date\n  }\n}]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "84fcc42c-bf93-474c-9ddd-425e0e8269fd",
+      "name": "Validate Date"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "45f96a61-3f89-4f24-bb14-e629944a6c7a",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        448,
+        0
+      ],
+      "id": "b0486730-cfee-418b-9f18-59b4c41a0d1c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "tHhqGG6Mv43acvoO",
+          "mode": "list",
+          "cachedResultName": "parcelbot_parcels",
+          "cachedResultUrl": "/projects/P6Qb4RFshRlGkMJ3/datatables/tHhqGG6Mv43acvoO"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "shipping_date",
+              "keyValue": "={{ $json.date }}"
+            }
+          ]
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "fd2cb6f8-8301-4875-9d11-55bc957d4e9d",
+      "name": "Get Parcels",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst parcels = $input.all()\n  .map(item => item.json)\n  .filter(row => row.id != null)\n  .map(row => ({\n    id: row.id,\n    name: row.name,\n    weight: row.weight,\n    priority: row.priority,\n    category: row.category,\n    shippingDate: row.shipping_date\n  }))\n\nreturn [{\n  json: {\n    parcels\n  }\n}]\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -96
+      ],
+      "id": "617c5430-0864-452b-b4fb-f16378be5f89",
+      "name": "Format Parcels Response"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1120,
+        -96
+      ],
+      "id": "8cfba5b2-eac6-4d07-8452-9ec1772d3e02",
+      "name": "Return Parcels"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "=\n{{ JSON.stringify({ error: $json.error }) }}\n",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        672,
+        96
+      ],
+      "id": "055d5f6c-b7c6-4a37-b410-fdcc62317ad0",
+      "name": "Return Validation Error"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Date": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get Parcels",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Validation Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Parcels": {
+      "main": [
+        [
+          {
+            "node": "Format Parcels Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Parcels Response": {
+      "main": [
+        [
+          {
+            "node": "Return Parcels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "1fe5878b-e555-4d85-bb9d-fa2ca0bd2cbc",
+  "meta": {
+    "instanceId": "68dbbb4e8fa686c3fd4e9982ade6836edb66976f207553e7ac22df961581c78c"
+  },
+  "nodeGroups": [],
+  "id": "pv6aVLwWXhlnOdY0",
+  "tags": []
+}
