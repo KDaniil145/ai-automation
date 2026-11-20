@@ -1,0 +1,15 @@
+cwd: frontend/
+$ corepack pnpm exec vitest run src/App.test.tsx -t 'retains input after'
+
+ RUN  v4.1.12 /home/daniil/projects/ai-automation/frontend
+
+ ✓ src/App.test.tsx (17 tests | 13 skipped) 925ms
+     ✓ retains input after network save failure and allows retry  379ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed | 13 skipped (17)
+   Start at  23:13:37
+   Duration  1.82s (transform 73ms, setup 93ms, import 416ms, tests 925ms, environment 300ms)
+
+
+Exit code: 0

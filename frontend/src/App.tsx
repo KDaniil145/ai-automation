@@ -2,15 +2,40 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 
 type Theme = "dark" | "light";
 type Tab = "new" | "shipments";
-type Category = "Heavy" | "Express" | "Standard";
+import {
+  Button,
+  MantineProvider,
+  Notification,
+  Paper,
+  Switch,
+  TextInput,
+  createTheme,
+} from "@mantine/core";
+import {
+  calculateParcel,
+  saveParcel,
+  isValidDate,
+  today,
+  errorMessage,
+  type Category,
+  type Parcel,
+} from "./api/parcels";
+import { useShipments } from "./useShipments";
 
-type Parcel = {
-  id: string;
-  name: string;
-  weight: number;
-  priority: boolean;
-  category: Category;
-  shippingDate: string;
+const appTheme = createTheme({
+  fontFamily: "Manrope, system-ui, sans-serif",
+  primaryColor: "blue",
+  defaultRadius: 9,
+  spacing: { xs: "8px", sm: "12px", md: "16px", lg: "24px", xl: "32px" },
+});
+const fieldClasses = {
+  root: "field",
+  label: "field-label",
+  input: "parcel-input",
+  wrapper: "field-input-wrap",
+  section: "field-section",
+  error: "field-error",
+  description: "field-hint",
 };
 
 type FormErrors = Partial<Record<"name" | "weight" | "date", string>>;
@@ -19,8 +44,6 @@ type FormStatus =
   | { type: "success"; category: Category }
   | { type: "error"; message: string }
   | null;
-
-const STORAGE_KEY = "parcelbot-parcels";
 
 const Icon = ({
   children,
@@ -65,49 +88,11 @@ const CalendarIcon = ({ size = 18 }: { size?: number }) => (
 
 const Spinner = () => <span className="spinner" aria-hidden="true" />;
 
-export const classifyParcel = (weight: number, priority: boolean): Category => {
-  if (weight > 10) return "Heavy";
-  return priority ? "Express" : "Standard";
-};
-
-const isValidDate = (value: string) => {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const [year, month, day] = value.split("-").map(Number);
-  const date = new Date(Date.UTC(year, month - 1, day));
-  return (
-    date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day
-  );
-};
-
-const isParcel = (value: unknown): value is Parcel => {
-  if (!value || typeof value !== "object") return false;
-  const parcel = value as Record<string, unknown>;
-  return (
-    typeof parcel.id === "string" &&
-    typeof parcel.name === "string" &&
-    typeof parcel.weight === "number" &&
-    parcel.weight > 0 &&
-    typeof parcel.priority === "boolean" &&
-    ["Heavy", "Express", "Standard"].includes(String(parcel.category)) &&
-    typeof parcel.shippingDate === "string" &&
-    isValidDate(parcel.shippingDate)
-  );
-};
-
-const readParcels = (): Parcel[] => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return [];
-    const parsed: unknown = JSON.parse(stored);
-    return Array.isArray(parsed) ? parsed.filter(isParcel) : [];
-  } catch {
-    return [];
-  }
-};
-
 function ThemeToggle({ theme, onChange }: { theme: Theme; onChange: () => void }) {
   return (
-    <button
+    <Button
+      unstyled
+      type="button"
       className="theme-toggle"
       onClick={onChange}
       aria-label={theme === "dark" ? "Включить светлую тему" : "Включить тёмную тему"}
@@ -129,7 +114,7 @@ function ThemeToggle({ theme, onChange }: { theme: Theme; onChange: () => void }
       <span className="toggle-track" aria-hidden="true">
         <span className="toggle-thumb" />
       </span>
-    </button>
+    </Button>
   );
 }
 
@@ -140,42 +125,36 @@ function StatusBanner({ status }: { status: Exclude<FormStatus, null> }) {
     status.type === "calculation" || status.type === "success" ? status.category : null;
 
   return (
-    <div
-      className={`notice ${isError ? "notice-error" : "notice-success"} result-notice`}
+    <Notification
+      unstyled
+      withCloseButton={false}
+      classNames={{
+        root: `notice ${isError ? "notice-error" : "notice-success"} result-notice`,
+        icon: "notice-icon",
+        body: "notice-content",
+        title: "notice-title",
+        description: "notice-copy",
+      }}
       role={isError ? "alert" : "status"}
       aria-live="polite"
+      icon={
+        <Icon size={17}>
+          {isError ? <path d="M12 4v9M12 17v1" /> : <path d="m5 12 4 4L19 6" />}
+        </Icon>
+      }
+      title={
+        isError ? status.message : isSaved ? "Посылка успешно сохранена" : `Категория: ${category}`
+      }
     >
-      <span className="notice-icon">
-        {isError ? (
-          <Icon size={17}>
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 8v5M12 16.5v.5" />
-          </Icon>
-        ) : (
-          <Icon size={17}>
-            <path d="m5 12 4 4L19 6" />
-          </Icon>
-        )}
-      </span>
-      <span>
-        <strong>
-          {isError
-            ? status.message
-            : isSaved
-              ? "Посылка успешно сохранена"
-              : `Категория: ${category}`}
-        </strong>
-        {isSaved && category && <small>Категория: {category}</small>}
-      </span>
-      {category && <span className={`tag tag-${category.toLowerCase()}`}>{category}</span>}
-    </div>
+      {category && <span className={`tag tag-${category}`}>{category}</span>}
+    </Notification>
   );
 }
 
 function NewParcel({ onSave }: { onSave: (parcel: Parcel) => void }) {
   const [name, setName] = useState("");
   const [weight, setWeight] = useState("");
-  const [date, setDate] = useState("2026-11-25");
+  const [date, setDate] = useState(today);
   const [priority, setPriority] = useState(true);
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState<"calculate" | "save" | null>(null);
@@ -200,79 +179,68 @@ function NewParcel({ onSave }: { onSave: (parcel: Parcel) => void }) {
     clearCalculation();
   };
 
-  const calculate = () => {
-    if (loading || !weightIsValid) {
-      setStatus(null);
-      setErrors((current) => ({
-        ...current,
-        weight: "Вес должен быть положительным числом",
-      }));
+  const calculate = async () => {
+    if (savingRef.current) return;
+    if (!weightIsValid) {
+      setErrors((current) => ({ ...current, weight: "Вес должен быть положительным числом" }));
       return;
     }
-
+    savingRef.current = true;
     setErrors((current) => ({ ...current, weight: undefined }));
     setStatus(null);
     setLoading("calculate");
-    window.setTimeout(() => {
-      setStatus({ type: "calculation", category: classifyParcel(parsedWeight, priority) });
+    try {
+      setStatus({ type: "calculation", category: await calculateParcel(parsedWeight, priority) });
+    } catch (error) {
+      setStatus({ type: "error", message: errorMessage(error) });
+    } finally {
+      savingRef.current = false;
       setLoading(null);
-    }, 350);
+    }
   };
 
-  const save = () => {
-    if (savingRef.current || loading) return;
-
+  const save = async () => {
+    if (savingRef.current) return;
     const nextErrors: FormErrors = {};
     const trimmedName = name.trim();
-    if (trimmedName.length < 1 || trimmedName.length > 80) {
+    if (!trimmedName || trimmedName.length > 80)
       nextErrors.name = "Название должно содержать от 1 до 80 символов";
-    }
-    if (!weightIsValid) {
-      nextErrors.weight = "Вес должен быть положительным числом";
-    }
-    if (!isValidDate(date)) {
-      nextErrors.date = "Некорректная дата отправки";
-    }
-
+    if (!weightIsValid) nextErrors.weight = "Вес должен быть положительным числом";
+    if (!isValidDate(date)) nextErrors.date = "Некорректная дата отправки";
     setErrors(nextErrors);
     setStatus(null);
-    if (Object.keys(nextErrors).length > 0) return;
-
+    if (Object.keys(nextErrors).length) return;
     savingRef.current = true;
     setLoading("save");
-
-    window.setTimeout(() => {
-      const category = classifyParcel(parsedWeight, priority);
-      const parcel: Parcel = {
-        id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`,
+    let parcel: Parcel;
+    try {
+      parcel = await saveParcel({
         name: trimmedName,
         weight: parsedWeight,
         priority,
-        category,
         shippingDate: date,
-      };
-
-      try {
-        onSave(parcel);
-        setStatus({ type: "success", category });
-        setName("");
-        setWeight("");
-        setErrors({});
-      } catch {
-        setStatus({
-          type: "error",
-          message: "Не удалось сохранить посылку. Попробуйте снова",
-        });
-      } finally {
-        savingRef.current = false;
-        setLoading(null);
-      }
-    }, 450);
+      });
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: `${errorMessage(error)} Если ответ потерян, проверьте отправки перед повторным сохранением.`,
+      });
+      savingRef.current = false;
+      setLoading(null);
+      return;
+    }
+    setStatus({ type: "success", category: parcel.category });
+    setName("");
+    setWeight("");
+    setErrors({});
+    savingRef.current = false;
+    setLoading(null);
+    onSave(parcel);
   };
 
   return (
     <div className="new-layout">
-      <section className="card form-card">
+      <Paper component="section" unstyled className="card form-card">
         <div className="section-heading">
           <div>
             <span className="eyebrow">Новая отправка</span>
@@ -281,12 +249,22 @@ function NewParcel({ onSave }: { onSave: (parcel: Parcel) => void }) {
           </div>
         </div>
 
-        <div className="form-grid">
-          <label className={`field field-wide ${errors.name ? "has-error" : ""}`}>
-            <span className="field-label">Название посылки</span>
-            <span className="input-wrap">
-              <BoxIcon size={18} />
-              <input
+        <form
+          aria-label="Новая посылка"
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault();
+            void save();
+          }}
+        >
+          <fieldset disabled={loading !== null} className="form-fields">
+            <div className="form-grid">
+              <TextInput
+                unstyled
+                classNames={{ ...fieldClasses, root: "field field-wide" }}
+                label="Название посылки"
+                leftSection={<BoxIcon size={18} />}
+                inputWrapperOrder={["label", "input", "description", "error"]}
                 value={name}
                 onChange={(event) => {
                   setName(event.target.value);
@@ -294,163 +272,135 @@ function NewParcel({ onSave }: { onSave: (parcel: Parcel) => void }) {
                 }}
                 placeholder="Например, документы"
                 maxLength={81}
-                aria-invalid={Boolean(errors.name)}
+                error={errors.name}
+                description={`${name.length}/80 символов`}
               />
-            </span>
-            {errors.name ? (
-              <span className="field-error">
-                <Icon size={14}>
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M12 8v5M12 17h.01" />
-                </Icon>
-                {errors.name}
-              </span>
-            ) : (
-              <span className="field-hint">{name.length}/80 символов</span>
-            )}
-          </label>
-
-          <label className={`field ${errors.weight ? "has-error" : ""}`}>
-            <span className="field-label">Вес, кг</span>
-            <span className="input-wrap">
-              <Icon size={18}>
-                <path d="M6 9a6 6 0 0 1 12 0M8.5 9a3.5 3.5 0 0 1 7 0" />
-                <path d="M5 9h14l2 12H3L5 9Z" />
-              </Icon>
-              <input
+              <TextInput
+                unstyled
+                classNames={fieldClasses}
+                label="Вес, кг"
+                leftSection={
+                  <Icon size={18}>
+                    <path d="M5 9h14l2 12H3L5 9ZM8 9V6a4 4 0 0 1 8 0v3" />
+                  </Icon>
+                }
                 type="number"
-                value={weight}
                 min="0"
-                step="0.1"
+                step="any"
+                value={weight}
                 onChange={(event) => handleWeightChange(event.target.value)}
                 placeholder="0.0"
-                aria-invalid={Boolean(errors.weight)}
+                error={errors.weight}
               />
-            </span>
-            {errors.weight && <span className="field-error">{errors.weight}</span>}
-          </label>
-
-          <label className={`field ${errors.date ? "has-error" : ""}`}>
-            <span className="field-label">Дата отправки</span>
-            <span className="input-wrap date-input">
-              <CalendarIcon />
-              <input
+              <TextInput
+                unstyled
+                classNames={fieldClasses}
+                label="Дата отправки"
+                leftSection={<CalendarIcon />}
                 type="date"
                 value={date}
                 onChange={(event) => {
                   setDate(event.target.value);
                   setErrors((current) => ({ ...current, date: undefined }));
                 }}
-                aria-invalid={Boolean(errors.date)}
+                error={errors.date}
               />
-            </span>
-            {errors.date && <span className="field-error">{errors.date}</span>}
-          </label>
 
-          <div className="priority-row field-wide">
-            <span className="priority-icon">
-              <Icon size={19}>
-                <path d="m13 2-8 12h7l-1 8 8-12h-7l1-8Z" />
-              </Icon>
-            </span>
-            <span className="priority-copy">
-              <strong>Приоритетная доставка</strong>
-              <small>{priority ? "Включена" : "Выключена"}</small>
-            </span>
-            <button
+              <div className="priority-row field-wide">
+                <span className="priority-icon">
+                  <Icon size={19}>
+                    <path d="m13 2-8 12h7l-1 8 8-12h-7l1-8Z" />
+                  </Icon>
+                </span>
+                <span className="priority-copy">
+                  <strong>Приоритетная доставка</strong>
+                  <small>{priority ? "Включена" : "Выключена"}</small>
+                </span>
+                <Switch
+                  withThumbIndicator={false}
+                  checked={priority}
+                  onChange={handlePriorityChange}
+                  aria-label="Приоритетная доставка"
+                  classNames={{
+                    root: "priority-switch",
+                    track: "priority-track",
+                    thumb: "priority-thumb",
+                  }}
+                />
+              </div>
+            </div>
+          </fieldset>
+
+          {loading && (
+            <div className="loading-state form-status" role="status" aria-live="polite">
+              <Spinner />
+              <span>
+                <strong>
+                  {loading === "calculate" ? "Выполняется расчёт" : "Сохраняем посылку"}
+                </strong>
+                <small>Пожалуйста, подождите</small>
+              </span>
+            </div>
+          )}
+          {!loading && status && <StatusBanner status={status} />}
+
+          <div className="actions">
+            <Button
+              unstyled
               type="button"
-              className={`switch ${priority ? "active" : ""}`}
-              onClick={handlePriorityChange}
-              role="switch"
-              aria-checked={priority}
-              aria-label="Приоритетная доставка"
+              className="button button-secondary"
+              onClick={calculate}
+              disabled={loading !== null}
             >
-              <span />
-            </button>
+              {loading === "calculate" ? (
+                <>
+                  <Spinner /> Рассчитываем…
+                </>
+              ) : (
+                <>
+                  <Icon size={18}>
+                    <rect x="4" y="2" width="16" height="20" rx="2" />
+                    <path d="M8 6h8M8 11h2M14 11h2M8 16h2M14 16h2" />
+                  </Icon>
+                  Рассчитать
+                </>
+              )}
+            </Button>
+            <Button
+              unstyled
+              type="submit"
+              className="button button-primary"
+              disabled={loading !== null}
+            >
+              {loading === "save" ? (
+                <>
+                  <Spinner /> Сохраняем…
+                </>
+              ) : (
+                <>
+                  <Icon size={18}>
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" />
+                    <path d="M17 21v-8H7v8M7 3v5h8" />
+                  </Icon>
+                  Сохранить посылку
+                </>
+              )}
+            </Button>
           </div>
-        </div>
-
-        {loading && (
-          <div className="loading-state form-status" role="status" aria-live="polite">
-            <Spinner />
-            <span>
-              <strong>
-                {loading === "calculate" ? "Выполняется расчёт" : "Сохраняем посылку"}
-              </strong>
-              <small>Пожалуйста, подождите</small>
-            </span>
-          </div>
-        )}
-        {!loading && status && <StatusBanner status={status} />}
-
-        <div className="actions">
-          <button
-            className="button button-secondary"
-            onClick={calculate}
-            disabled={loading !== null}
-          >
-            {loading === "calculate" ? (
-              <>
-                <Spinner /> Рассчитываем…
-              </>
-            ) : (
-              <>
-                <Icon size={18}>
-                  <rect x="4" y="2" width="16" height="20" rx="2" />
-                  <path d="M8 6h8M8 11h2M14 11h2M8 16h2M14 16h2" />
-                </Icon>
-                Рассчитать
-              </>
-            )}
-          </button>
-          <button className="button button-primary" onClick={save} disabled={loading !== null}>
-            {loading === "save" ? (
-              <>
-                <Spinner /> Сохраняем…
-              </>
-            ) : (
-              <>
-                <Icon size={18}>
-                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" />
-                  <path d="M17 21v-8H7v8M7 3v5h8" />
-                </Icon>
-                Сохранить посылку
-              </>
-            )}
-          </button>
-        </div>
-      </section>
+        </form>
+      </Paper>
     </div>
   );
 }
 
-function Shipments({ parcels }: { parcels: Parcel[] }) {
-  const [date, setDate] = useState("2026-11-25");
-  const [results, setResults] = useState<Parcel[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searched, setSearched] = useState(false);
-  const [operationError, setOperationError] = useState<string | null>(null);
-
-  const show = () => {
-    if (loading) return;
-    setLoading(true);
-    setOperationError(null);
-    window.setTimeout(() => {
-      try {
-        setResults(parcels.filter((parcel) => parcel.shippingDate === date));
-        setSearched(true);
-      } catch {
-        setResults([]);
-        setSearched(true);
-        setOperationError("Не удалось загрузить отправки. Попробуйте снова");
-      } finally {
-        setLoading(false);
-      }
-    }, 350);
-  };
-
+function Shipments({ shipments }: { shipments: ReturnType<typeof useShipments> }) {
+  const { date, selectDate, state, retry } = shipments;
+  const results = state.parcels;
+  const loading = isValidDate(date) && (state.status === "idle" || state.status === "loading");
+  const operationError = state.error;
+  const show = retry;
   return (
-    <section className="card shipments-card">
+    <Paper component="section" unstyled className="card shipments-card">
       <div className="section-heading shipments-heading">
         <div>
           <span className="eyebrow">Сохранённые отправки</span>
@@ -458,37 +408,28 @@ function Shipments({ parcels }: { parcels: Parcel[] }) {
           <p>Выберите дату, чтобы посмотреть сохранённые посылки.</p>
         </div>
         <div className="result-count" aria-live="polite">
-          <strong>{results.length}</strong>
+          <strong>{state.status === "success" ? results.length : "—"}</strong>
           <span>{results.length === 1 ? "отправка" : "отправок"}</span>
         </div>
       </div>
 
       <div className="filter-bar">
-        <label className="field filter-field">
-          <span className="field-label">Дата отправки</span>
-          <span className="input-wrap date-input">
-            <CalendarIcon />
-            <input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
-          </span>
-        </label>
-        <button className="button button-primary" onClick={show} disabled={loading}>
-          {loading ? (
-            <>
-              <Spinner /> Загружаем…
-            </>
-          ) : (
-            <>
-              <Icon size={18}>
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-4-4" />
-              </Icon>
-              Показать отправки
-            </>
-          )}
-        </button>
+        <TextInput
+          unstyled
+          classNames={{ ...fieldClasses, root: "field filter-field" }}
+          label="Дата отправки"
+          leftSection={<CalendarIcon />}
+          type="date"
+          value={date}
+          onChange={(event) => selectDate(event.target.value)}
+        />
       </div>
 
-      {loading ? (
+      {!isValidDate(date) ? (
+        <div className="empty-state">
+          <h3>Выберите корректную дату отправки</h3>
+        </div>
+      ) : loading ? (
         <div className="result-placeholder" role="status">
           <Spinner />
           <strong>Загружаем отправки</strong>
@@ -503,9 +444,9 @@ function Shipments({ parcels }: { parcels: Parcel[] }) {
             </Icon>
           </span>
           <h3>{operationError}</h3>
-          <button className="button button-secondary" onClick={show}>
+          <Button unstyled type="button" className="button button-secondary" onClick={show}>
             Попробовать снова
-          </button>
+          </Button>
         </div>
       ) : results.length > 0 ? (
         <div className="table-wrap">
@@ -558,14 +499,10 @@ function Shipments({ parcels }: { parcels: Parcel[] }) {
             <CalendarIcon size={28} />
           </span>
           <h3>На выбранную дату посылок нет</h3>
-          <p>
-            {searched
-              ? "Выберите другую дату или сохраните новую посылку."
-              : "Выберите дату и нажмите «Показать отправки»."}
-          </p>
+          <p>Выберите другую дату или сохраните новую посылку.</p>
         </div>
       )}
-    </section>
+    </Paper>
   );
 }
 
@@ -578,7 +515,7 @@ export default function App() {
     }
   });
   const [tab, setTab] = useState<Tab>("new");
-  const [parcels, setParcels] = useState<Parcel[]>(readParcels);
+  const shipments = useShipments(tab === "shipments");
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -589,69 +526,67 @@ export default function App() {
     }
   }, [theme]);
 
-  const saveParcel = (parcel: Parcel) => {
-    const next = [...parcels, parcel];
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    setParcels(next);
-  };
-
   return (
-    <div className="app-shell">
-      <header className="header">
-        <div className="header-inner">
-          <div className="brand">
-            <span className="logo">
-              <BoxIcon />
-            </span>
-            <span className="brand-copy">
-              <strong>
-                Parcel<span>Bot</span>
-              </strong>
-              <small>Сервис классификации и планирования отправок</small>
-            </span>
+    <MantineProvider theme={appTheme} forceColorScheme={theme}>
+      <div className="app-shell">
+        <header className="header">
+          <div className="header-inner">
+            <div className="brand">
+              <span className="logo">
+                <BoxIcon />
+              </span>
+              <span className="brand-copy">
+                <strong>
+                  Parcel<span>Bot</span>
+                </strong>
+                <small>Сервис классификации и планирования отправок</small>
+              </span>
+            </div>
+            <ThemeToggle
+              theme={theme}
+              onChange={() => setTheme((value) => (value === "dark" ? "light" : "dark"))}
+            />
           </div>
-          <ThemeToggle
-            theme={theme}
-            onChange={() => setTheme((value) => (value === "dark" ? "light" : "dark"))}
-          />
-        </div>
-      </header>
+        </header>
 
-      <main>
-        <div className="top-row">
-          <nav className="tabs" aria-label="Разделы приложения">
-            <button className={tab === "new" ? "active" : ""} onClick={() => setTab("new")}>
-              <Icon size={18}>
-                <path d="M12 5v14M5 12h14" />
-              </Icon>
-              Новая посылка
-            </button>
-            <button
-              className={tab === "shipments" ? "active" : ""}
-              onClick={() => setTab("shipments")}
-            >
-              <CalendarIcon />
-              Отправки по дате
-              {parcels.length > 0 && <span className="tab-count">{parcels.length}</span>}
-            </button>
-          </nav>
-          <span className="demo-badge">Демо-режим</span>
-        </div>
+        <main>
+          <div className="top-row">
+            <nav className="tabs" aria-label="Разделы приложения">
+              <Button
+                unstyled
+                type="button"
+                aria-current={tab === "new" ? "page" : undefined}
+                className={tab === "new" ? "active" : ""}
+                onClick={() => setTab("new")}
+              >
+                <Icon size={18}>
+                  <path d="M12 5v14M5 12h14" />
+                </Icon>
+                Новая посылка
+              </Button>
+              <Button
+                unstyled
+                type="button"
+                aria-current={tab === "shipments" ? "page" : undefined}
+                className={tab === "shipments" ? "active" : ""}
+                onClick={() => setTab("shipments")}
+              >
+                <CalendarIcon />
+                Отправки по дате
+              </Button>
+            </nav>
+          </div>
 
-        {tab === "new" ? (
-          <NewParcel onSave={saveParcel} />
-        ) : (
-          <Shipments key={parcels.length} parcels={parcels} />
-        )}
-      </main>
+          <div hidden={tab !== "new"}>
+            <NewParcel onSave={shipments.invalidate} />
+          </div>
+          {tab === "shipments" && <Shipments shipments={shipments} />}
+        </main>
 
-      <footer>
-        <span>ParcelBot</span>
-        <span className="system-status">
-          <i /> Данные хранятся в этом браузере
-        </span>
-        <span>Демо-режим</span>
-      </footer>
-    </div>
+        <footer>
+          <span>ParcelBot</span>
+        </footer>
+      </div>
+    </MantineProvider>
   );
 }

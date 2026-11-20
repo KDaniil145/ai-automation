@@ -1,0 +1,14 @@
+--- App.tsx.original
++++ App.tsx.temporary-mutation
+@@ -221,10 +221,7 @@
+         shippingDate: date,
+       });
+     } catch (error) {
+-      setStatus({
+-        type: "error",
+-        message: `${errorMessage(error)} Если ответ потерян, проверьте отправки перед повторным сохранением.`,
+-      });
++      setStatus(null);
+       savingRef.current = false;
+       setLoading(null);
+       return;

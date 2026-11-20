@@ -1,0 +1,36 @@
+M  README.md
+A  docs/screenshots/01-form-dark.png
+A  docs/screenshots/02-loading.png
+A  docs/screenshots/03-success-dark.png
+A  docs/screenshots/04-success-light.png
+A  docs/screenshots/05-list-light.png
+A  docs/screenshots/06-mobile-form.png
+A  docs/screenshots/07-empty-mobile.png
+A  docs/screenshots/08-error-mobile.png
+A  docs/screenshots/toggle-dark-off.png
+A  docs/screenshots/toggle-dark-on.png
+A  docs/screenshots/toggle-light-off.png
+A  docs/screenshots/toggle-light-on.png
+A  docs/verification-output.txt
+A  docs/verification.md
+A  frontend/.env.example
+M  frontend/.gitignore
+M  frontend/package.json
+A  frontend/playwright.config.ts
+M  frontend/pnpm-lock.yaml
+A  frontend/src/App.test.tsx
+M  frontend/src/App.tsx
+A  frontend/src/api/parcels.test.ts
+A  frontend/src/api/parcels.ts
+M  frontend/src/index.css
+A  frontend/src/test/fixtures.ts
+A  frontend/src/test/setup.ts
+A  frontend/src/useShipments.ts
+M  frontend/src/vite-env.d.ts
+A  frontend/tests/browser/parcelbot.spec.ts
+M  frontend/tsconfig.json
+M  frontend/vite.config.ts
+A  frontend/vitest.config.ts
+?? docs/audit/
+
+100644 d2074ae816e57fb16c358ef10940dbd853f3064f 0	frontend/src/App.tsx

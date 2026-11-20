@@ -1,0 +1,67 @@
+{
+  "utc": "20261120T201327.781595Z",
+  "source_sha256_before": "76e3873c6301d76596f1e62a3e6c95a0005f1dead2db648cb73afc466688e080",
+  "backup_path": "frontend/.cache/audit/mutation-20261120T201327.781595Z/App.tsx.original",
+  "backup_sha256": "76e3873c6301d76596f1e62a3e6c95a0005f1dead2db648cb73afc466688e080",
+  "index_sha256_before": "458526b24eab3212864365db0be76e89fba9f02db5f6c7895080f09a678d2a4f",
+  "index_entry_before": "100644 d2074ae816e57fb16c358ef10940dbd853f3064f 0\tfrontend/src/App.tsx",
+  "staged_App_sha256_before": "76e3873c6301d76596f1e62a3e6c95a0005f1dead2db648cb73afc466688e080",
+  "mutation": "Only save catch setStatus(error) becomes setStatus(null)",
+  "runs": [
+    {
+      "phase": "01-before-pass",
+      "command": [
+        "corepack",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/App.test.tsx",
+        "-t",
+        "retains input after"
+      ],
+      "exit": 0,
+      "output": "01-before-pass.txt"
+    },
+    {
+      "phase": "02-broken-fail",
+      "command": [
+        "corepack",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/App.test.tsx",
+        "-t",
+        "retains input after"
+      ],
+      "exit": 1,
+      "output": "02-broken-fail.txt"
+    },
+    {
+      "phase": "03-restored-pass",
+      "command": [
+        "corepack",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "src/App.test.tsx",
+        "-t",
+        "retains input after"
+      ],
+      "exit": 0,
+      "output": "03-restored-pass.txt"
+    }
+  ],
+  "mutated_sha256": "6faceeae2f4fdf8740a9f60a8514ece49050c025442de5db871770e7a86435f9",
+  "source_sha256_after_restore": "76e3873c6301d76596f1e62a3e6c95a0005f1dead2db648cb73afc466688e080",
+  "source_restored_exactly": true,
+  "source_mode_unchanged": true,
+  "index_sha256_after_restore": "458526b24eab3212864365db0be76e89fba9f02db5f6c7895080f09a678d2a4f",
+  "staged_App_sha256_after_restore": "76e3873c6301d76596f1e62a3e6c95a0005f1dead2db648cb73afc466688e080",
+  "source_sha256_final": "76e3873c6301d76596f1e62a3e6c95a0005f1dead2db648cb73afc466688e080",
+  "index_sha256_final": "458526b24eab3212864365db0be76e89fba9f02db5f6c7895080f09a678d2a4f",
+  "staged_App_sha256_final": "76e3873c6301d76596f1e62a3e6c95a0005f1dead2db648cb73afc466688e080",
+  "result": "PASS -> FAIL -> PASS; source and prepared index unchanged"
+}

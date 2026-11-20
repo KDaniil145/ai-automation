@@ -1,0 +1,274 @@
+{
+  "generatedUTC": "2026-11-20T20:45:43.553Z",
+  "source": "Current frontend/ rendered by Playwright Chromium; no UI CSS/DOM overrides",
+  "api": "All responses mocked at api.example.test; external requests blocked",
+  "locale": "ru-RU",
+  "language": "ru_RU:ru",
+  "deviceScaleFactor": 2,
+  "sourceChecksums": {
+    "frontend/src/App.test.tsx": "046c2386d45bcacf4c770a92d6bc5738f41737e2f276442335d6d9246fb3a7e6",
+    "frontend/src/App.tsx": "76e3873c6301d76596f1e62a3e6c95a0005f1dead2db648cb73afc466688e080",
+    "frontend/src/api/parcels.test.ts": "e9220fa1a4656a887627e29a1451dd107b820346b531308c519f083f75373c46",
+    "frontend/src/api/parcels.ts": "ca9f59be811fa4d6fba3bf866cfa67681ba8889c32ff34cda2b7ec2baa7d0b7c",
+    "frontend/src/index.css": "b4922e816eb73f04262c37cb29e2bd4b81353a8e38649af89c3b98c277709b2d",
+    "frontend/src/main.tsx": "5f49dce6e6cc4b5d678cf529ef892af0ab7dfa6afb300b11ad559224019b8b05",
+    "frontend/src/test/fixtures.ts": "029d8f80b3e637246222f46f9a87cf6fd18e8bfdfef5d0e7c0c7b856f6ca2f54",
+    "frontend/src/test/setup.ts": "8333a1ee02003286ed6f9cb86f04c78b87cab7d7bc81ec4e38701bc07918aa5f",
+    "frontend/src/useShipments.ts": "bbd40bc3eccf3c63ccc4dccba397e565b4ce123472e47f6ba781e85e4c56d671",
+    "frontend/src/vite-env.d.ts": "3076da3b42094cafc0122c6577e0dbc6b15af244b1952d329914e9597b61c67b",
+    "frontend/vite.config.ts": "22982cc581fde36929b810e4ea2441bfe03f32fd08d7c6055ed65f151b9e06ab",
+    "frontend/playwright.config.ts": "8a1175dfa36f805b85ae5c60f27f0314e062c961e2bba4a0ca12e33478355eb5",
+    "README.md": "73d7a54a43035e8d7351b960338c44700e161b84a22a462fc3f156a6241adc7c",
+    "docs/design/ParcelBot Parcel Planning Interface.zip": "977a52d94230d3dad975829c99613f876eebc6879e9311778f033e2c64fe6859",
+    "docs/screenshots/01-form-dark.png": "05076199f3bef43d5985cdfddfcc863a576c5898cc8525696813b8bcb8188206",
+    "docs/screenshots/02-loading.png": "ee9cdbb88b614c9f9eaefd964b4cf1ce975980e91a345ec72ee04d0a21a94ae9",
+    "docs/screenshots/03-success-dark.png": "03c8483b3d308739bd64666c4ab4a7eda5d31bd4ffae0d3fbcce116d25bdfafc",
+    "docs/screenshots/04-success-light.png": "2123572a056c57127e7688914e6259e0830f0c9f25f8aa5bb7c87f2002500a37",
+    "docs/screenshots/05-list-light.png": "c51d51a3488fab036f7d0423f99b48d22c8f630d5d1084ab6908a1d73d8ffcdd",
+    "docs/screenshots/06-mobile-form.png": "ef56045a775020b5f76870b104d64308f870ea8bcf6ec7b8e5097d767577fb80",
+    "docs/screenshots/07-empty-mobile.png": "9bf8ab4b7dbaaf5187da3a2963b37416541456bdfca85e97c4018749dc4028ad",
+    "docs/screenshots/08-error-mobile.png": "f8566de1836c21de2332841d6dbaf82c709483b146b6cf0ca6c8a6da48c40158",
+    "docs/screenshots/toggle-dark-off.png": "d78f2e5ab146cb31cbfbc644fd632dd477832b30ff4199e997a3e5124d541f45",
+    "docs/screenshots/toggle-dark-on.png": "05076199f3bef43d5985cdfddfcc863a576c5898cc8525696813b8bcb8188206",
+    "docs/screenshots/toggle-light-off.png": "b03a801cbac0d6119981aa6037fe69ac5abe69a4db9fe05b4338619e3ad2689e",
+    "docs/screenshots/toggle-light-on.png": "9038a896e10c093a837a88e8254099b21534475eaae0408c2fa24a45e342752c"
+  },
+  "frames": [
+    {
+      "id": "01-form-dark",
+      "title": "Новая посылка",
+      "subtitle": "Тёмная тема · ввод параметров",
+      "theme": "dark",
+      "state": "form",
+      "file": "screens/01-form-dark.png",
+      "width": 2560,
+      "height": 1800,
+      "sha256": "9ac6e0fe5b47a99f475eed43a01308ff16492147848b2920cf36574e17d3a71d",
+      "mockCalls": [],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    },
+    {
+      "id": "02-form-light",
+      "title": "Новая посылка",
+      "subtitle": "Светлая тема · те же параметры",
+      "theme": "light",
+      "state": "form",
+      "file": "screens/02-form-light.png",
+      "width": 2560,
+      "height": 1800,
+      "sha256": "053f148266f76fb7785963996521412d6df1e4622ab937ca3c6caadb3177b615",
+      "mockCalls": [],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    },
+    {
+      "id": "03-list-dark",
+      "title": "Отправки по дате",
+      "subtitle": "Тёмная тема · ответ WF2",
+      "theme": "dark",
+      "state": "list",
+      "file": "screens/03-list-dark.png",
+      "width": 2560,
+      "height": 1800,
+      "sha256": "04273cdf4534ff267e5de5875b2290306dd645dde519bd721c507667f68b4443",
+      "mockCalls": [
+        {
+          "method": "GET",
+          "path": "/webhook/parcelbot-parcels"
+        }
+      ],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    },
+    {
+      "id": "04-list-light",
+      "title": "Отправки по дате",
+      "subtitle": "Светлая тема · ответ WF2",
+      "theme": "light",
+      "state": "list",
+      "file": "screens/04-list-light.png",
+      "width": 2560,
+      "height": 1800,
+      "sha256": "79f99dd3d816bba52fecbdc7be57b6fa96d3219ce542de00576ccc983aff4c1e",
+      "mockCalls": [
+        {
+          "method": "GET",
+          "path": "/webhook/parcelbot-parcels"
+        }
+      ],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    },
+    {
+      "id": "05-loading",
+      "title": "Loading / сохранение",
+      "subtitle": "WF1 ожидает ответа · повторная отправка заблокирована",
+      "theme": "dark",
+      "state": "loading",
+      "file": "screens/05-loading.png",
+      "width": 2560,
+      "height": 1800,
+      "sha256": "a97ae39e5573a8e5f321e85b4001bd9a08f47e2c6b28412c3a47329cf1e31e60",
+      "mockCalls": [
+        {
+          "method": "POST",
+          "path": "/webhook/parcelbot-parcel"
+        }
+      ],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    },
+    {
+      "id": "06-success",
+      "title": "Success / сохранено",
+      "subtitle": "Подтверждение сохранения и категория express",
+      "theme": "light",
+      "state": "success",
+      "file": "screens/06-success.png",
+      "width": 2560,
+      "height": 1800,
+      "sha256": "135de66b5b847ea8107d0697b441dd9d0d943066fa884ba127247b4b4dfe4a3b",
+      "mockCalls": [
+        {
+          "method": "POST",
+          "path": "/webhook/parcelbot-parcel"
+        }
+      ],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    },
+    {
+      "id": "07-empty",
+      "title": "Empty / нет отправок",
+      "subtitle": "WF2 вернул пустой массив за выбранную дату",
+      "theme": "light",
+      "state": "empty",
+      "file": "screens/07-empty.png",
+      "width": 2560,
+      "height": 1800,
+      "sha256": "4f71a49dc5b2c447984a5f0969a72d4ea6f164de8b20de3befa1b0bba9988599",
+      "mockCalls": [
+        {
+          "method": "GET",
+          "path": "/webhook/parcelbot-parcels"
+        }
+      ],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    },
+    {
+      "id": "08-error",
+      "title": "Error / ошибка загрузки",
+      "subtitle": "HTTP 503 · доступна повторная попытка",
+      "theme": "dark",
+      "state": "error",
+      "file": "screens/08-error.png",
+      "width": 2560,
+      "height": 1800,
+      "sha256": "e5b5605206e41707155057850e81e95d51c4ea2ef82c98034421b0acff6f29d4",
+      "mockCalls": [
+        {
+          "method": "GET",
+          "path": "/webhook/parcelbot-parcels"
+        }
+      ],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    },
+    {
+      "id": "09-mobile-form",
+      "title": "Форма",
+      "subtitle": "Светлая тема · приоритет выключен",
+      "theme": "light",
+      "state": "form",
+      "mobile": true,
+      "file": "screens/09-mobile-form.png",
+      "width": 750,
+      "height": 1866,
+      "sha256": "3a8d364391ddb104ac9676c08f00bbae85842542d5db549b609132232445b6b7",
+      "mockCalls": [],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    },
+    {
+      "id": "10-mobile-list",
+      "title": "Отправки",
+      "subtitle": "Светлая тема · адаптивные карточки",
+      "theme": "light",
+      "state": "list",
+      "mobile": true,
+      "file": "screens/10-mobile-list.png",
+      "width": 750,
+      "height": 2122,
+      "sha256": "bf3c195033d3b26dc6b95454c2f3213790630c31297f69509f6149ece9013346",
+      "mockCalls": [
+        {
+          "method": "GET",
+          "path": "/webhook/parcelbot-parcels"
+        }
+      ],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    },
+    {
+      "id": "11-mobile-empty",
+      "title": "Пустой результат",
+      "subtitle": "Тёмная тема · смена даты",
+      "theme": "dark",
+      "state": "empty",
+      "mobile": true,
+      "file": "screens/11-mobile-empty.png",
+      "width": 750,
+      "height": 1674,
+      "sha256": "c0c0bb6c28b4f0e6372fdf747b1929268cfbf933119bb3bb89f7de72d8fc0952",
+      "mockCalls": [
+        {
+          "method": "GET",
+          "path": "/webhook/parcelbot-parcels"
+        }
+      ],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    },
+    {
+      "id": "12-mobile-error",
+      "title": "Ошибка",
+      "subtitle": "Тёмная тема · повтор загрузки",
+      "theme": "dark",
+      "state": "error",
+      "mobile": true,
+      "file": "screens/12-mobile-error.png",
+      "width": 750,
+      "height": 1674,
+      "sha256": "2eeee4596fef8732be7bad3456ad1a0f9f4ff2a29d52853ccf5544798268bc06",
+      "mockCalls": [
+        {
+          "method": "GET",
+          "path": "/webhook/parcelbot-parcels"
+        }
+      ],
+      "blockedOrigins": [
+        "https://fonts.googleapis.com"
+      ]
+    }
+  ],
+  "board": {
+    "file": "parcelbot-design-board.png",
+    "width": 3520,
+    "height": 9294,
+    "sha256": "54e67bab36f274446e0d04e65d2fcad0d484de5261ebb439d9f04551913701db"
+  },
+  "originalFilesUnchanged": true
+}

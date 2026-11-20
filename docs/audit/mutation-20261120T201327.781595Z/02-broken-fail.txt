@@ -1,0 +1,385 @@
+cwd: frontend/
+$ corepack pnpm exec vitest run src/App.test.tsx -t 'retains input after'
+
+ RUN  v4.1.12 /home/daniil/projects/ai-automation/frontend
+
+ ❯ src/App.test.tsx (17 tests | 4 failed | 13 skipped) 4802ms
+     ↓ renders labelled Mantine fields, keyboard switch, themes and no demo UI
+     ↓ validates required fields and invalid weight/date without a request
+     ↓ rejects 81 characters but accepts 80 and trims the submitted name
+     ↓ calculates through WF1 without requiring name/date; prevents repeated calculation
+     ↓ blocks double click and repeated Enter/submission while saving
+     ↓ full journey: fills form, calculates via WF1, saves via WF1, then displays WF2 data
+     × retains input after network save failure and allows retry 1363ms
+     × retains input after validation save failure and allows retry 1157ms
+     × retains input after server save failure and allows retry 1143ms
+     × retains input after malformed save failure and allows retry 1138ms
+     ↓ shows loading, empty, error and retry for automatic WF2 requests
+     ↓ ignores stale successes and errors, even when transport ignores abort
+     ↓ does not show old rows or count after changing or clearing the date
+     ↓ keeps date/results across tabs and reloads results after remount
+     ↓ survives unavailable storage and corrupt saved dates
+     ↓ refreshes an already loaded list after saving to its date
+     ↓ save invalidates an earlier GET; failed refresh never reports failed save
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.test.tsx > ParcelBot user scenarios > retains input after network save failure and allows retry
+ FAIL  src/App.test.tsx > ParcelBot user scenarios > retains input after validation save failure and allows retry
+ FAIL  src/App.test.tsx > ParcelBot user scenarios > retains input after server save failure and allows retry
+ FAIL  src/App.test.tsx > ParcelBot user scenarios > retains input after malformed save failure and allows retry
+TestingLibraryElementError: Unable to find role="alert"
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"app-shell"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"header"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"header-inner"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"brand"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"logo"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m""[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mheight[39m=[32m"22"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.8"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [33mwidth[39m=[32m"22"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m21 8-9 5-9-5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m3.3 7 8.7-5 8.7 5v10L12 22l-8.7-5Z"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M12 13v9"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m7.5 4.6 9 5"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"brand-copy"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mParcel[0m
+                [36m<span>[39m
+                  [0mBot[0m
+                [36m</span>[39m
+              [36m</strong>[39m
+              [36m<small>[39m
+                [0mСервис классификации и планирования отправок[0m
+              [36m</small>[39m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Включить светлую тему"[39m
+            [33mclass[39m=[32m"theme-toggle mantine-Button-root mantine-UnstyledButton-root"[39m
+            [33mstyle[39m=[32m"--button-color: var(--mantine-color-white);"[39m
+            [33mtitle[39m=[32m"Светлая тема"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"mantine-Button-inner"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"mantine-Button-label"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"theme-icon"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33maria-hidden[39m=[32m"true"[39m
+                    [33mclass[39m=[32m""[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"17"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                    [33mstroke-width[39m=[32m"1.8"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"17"[39m
+                  [36m>[39m
+                    [36m<circle[39m
+                      [33mcx[39m=[32m"12"[39m
+                      [33mcy[39m=[32m"12"[39m
+                      [33mr[39m=[32m"4"[39m
+                    [36m/>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"theme-label"[39m
+                [36m>[39m
+                  [0mТёмная[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"toggle-track"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"toggle-thumb"[39m
+                  [36m/>[39m
+                [36m</span>[39m
+              [36m</span>[39m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</header>[39m
+      [36m<main>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"top-row"[39m
+        [36m>[39m
+          [36m<nav[39m
+            [33maria-label[39m=[32m"Разделы приложения"[39m
+            [33mclass[39m=[32m"tabs"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-current[39m=[32m"page"[39m
+              [33mclass[39m=[32m"active mantine-Button-root mantine-UnstyledButton-root"[39m
+              [33mstyle[39m=[32m"--button-color: var(--mantine-color-white);"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"mantine-Button-inner"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"mantine-Button-label"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33maria-hidden[39m=[32m"true"[39m
+                    [33mclass[39m=[32m""[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                    [33mstroke-width[39m=[32m"1.8"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M12 5v14M5 12h14"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                  [0mНовая посылка[0m
+                [36m</span>[39m
+              [36m</span>[39m
+            [36m</button>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"mantine-Button-root mantine-UnstyledButton-root"[39m
+              [33mstyle[39m=[32m"--button-color: var(--mantine-color-white);"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"mantine-Button-inner"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"mantine-Button-label"[39m
+                [36m>[39m
+                  ...
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"app-shell"[39m
+    [36m>[39m
+      [36m<header[39m
+        [33mclass[39m=[32m"header"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"header-inner"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"brand"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"logo"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m""[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mheight[39m=[32m"22"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"1.8"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [33mwidth[39m=[32m"22"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m21 8-9 5-9-5"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m3.3 7 8.7-5 8.7 5v10L12 22l-8.7-5Z"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M12 13v9"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"m7.5 4.6 9 5"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+            [36m</span>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"brand-copy"[39m
+            [36m>[39m
+              [36m<strong>[39m
+                [0mParcel[0m
+                [36m<span>[39m
+                  [0mBot[0m
+                [36m</span>[39m
+              [36m</strong>[39m
+              [36m<small>[39m
+                [0mСервис классификации и планирования отправок[0m
+              [36m</small>[39m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Включить светлую тему"[39m
+            [33mclass[39m=[32m"theme-toggle mantine-Button-root mantine-UnstyledButton-root"[39m
+            [33mstyle[39m=[32m"--button-color: var(--mantine-color-white);"[39m
+            [33mtitle[39m=[32m"Светлая тема"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"mantine-Button-inner"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"mantine-Button-label"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"theme-icon"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33maria-hidden[39m=[32m"true"[39m
+                    [33mclass[39m=[32m""[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"17"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                    [33mstroke-width[39m=[32m"1.8"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"17"[39m
+                  [36m>[39m
+                    [36m<circle[39m
+                      [33mcx[39m=[32m"12"[39m
+                      [33mcy[39m=[32m"12"[39m
+                      [33mr[39m=[32m"4"[39m
+                    [36m/>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"theme-label"[39m
+                [36m>[39m
+                  [0mТёмная[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mclass[39m=[32m"toggle-track"[39m
+                [36m>[39m
+                  [36m<span[39m
+                    [33mclass[39m=[32m"toggle-thumb"[39m
+                  [36m/>[39m
+                [36m</span>[39m
+              [36m</span>[39m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</header>[39m
+      [36m<main>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"top-row"[39m
+        [36m>[39m
+          [36m<nav[39m
+            [33maria-label[39m=[32m"Разделы приложения"[39m
+            [33mclass[39m=[32m"tabs"[39m
+          [36m>[39m
+            [36m<button[39m
+              [33maria-current[39m=[32m"page"[39m
+              [33mclass[39m=[32m"active mantine-Button-root mantine-UnstyledButton-root"[39m
+              [33mstyle[39m=[32m"--button-color: var(--mantine-color-white);"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"mantine-Button-inner"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"mantine-Button-label"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33maria-hidden[39m=[32m"true"[39m
+                    [33mclass[39m=[32m""[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mheight[39m=[32m"18"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                    [33mstroke-width[39m=[32m"1.8"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mwidth[39m=[32m"18"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M12 5v14M5 12h14"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                  [0mНовая посылка[0m
+                [36m</span>[39m
+              [36m</span>[39m
+            [36m</button>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"mantine-Button-root mantine-UnstyledButton-root"[39m
+              [33mstyle[39m=[32m"--button-color: var(--mantine-color-white);"[39m
+              [33mtype[39m=[32m"button"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"mantine-Button-inner"[39m
+              [36m>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"mantine-Button-label"[39m
+                [36m>[39m
+                  ...
+ ❯ waitForWrapper node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.2/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/App.test.tsx:144:27
+    142|       await fillForm();
+    143|       await userEvent.click(newForm().getByRole("button", { name: "Сох…
+    144|       expect(await screen.findByRole("alert")).toBeVisible();
+       |                           ^
+    145|       expect(newForm().getByLabelText("Название посылки")).toHaveValue…
+    146|       expect(mock).toHaveBeenCalledTimes(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 13 skipped (17)
+   Start at  23:13:31
+   Duration  5.75s (transform 76ms, setup 121ms, import 431ms, tests 4.80s, environment 308ms)
+
+
+Exit code: 1

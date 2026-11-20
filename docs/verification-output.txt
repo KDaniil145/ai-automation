@@ -1,0 +1,216 @@
+ParcelBot final review verification
+UTC: 2026-11-20T19:31:19.418400+00:00
+Working directory: frontend/
+No production API calls. Automated tests use mocked API responses.
+
+$ node --version
+v24.22.0
+
+Exit: 0
+
+$ corepack pnpm --version
+12.21.0
+
+Exit: 0
+
+$ corepack pnpm test
+$ vitest run
+
+ RUN  v4.1.12 /home/daniil/projects/ai-automation/frontend
+
+
+ Test Files  2 passed (2)
+      Tests  38 passed (38)
+   Start at  22:31:20
+   Duration  5.50s (transform 138ms, setup 766ms, import 1.16s, tests 2.93s, environment 1.93s)
+
+
+Exit: 0
+
+Browser environment: LD_LIBRARY_PATH="$PWD/.cache/browser-libs/usr/lib/x86_64-linux-gnu" (ParcelBot only).
+$ corepack pnpm test:browser
+$ playwright test
+[WebServer] (node:1785) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ vite --port 15173
+[WebServer] (node:1839) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:1893) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/parcelbot.spec.ts:42:1 › keyboard journey across both workflows, reload and two themes (1.5s)
+  ✓  2 tests/browser/parcelbot.spec.ts:148:1 › mobile empty/error/retry remains readable in both themes (1.0s)
+  ✓  3 tests/browser/parcelbot.spec.ts:189:1 › both toggle tracks change color and thumb position in both themes (1.5s)
+
+  3 passed (5.7s)
+
+Exit: 0
+
+$ corepack pnpm typecheck
+$ tsc --noEmit
+
+Exit: 0
+
+$ corepack pnpm build
+$ vite build
+vite v8.1.7 building client environment for production...
+
+transforming...✓ 737 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/robots.txt                   0.02 kB │ gzip:  0.04 kB
+dist/index.html                   0.93 kB │ gzip:  0.42 kB
+dist/assets/index-Bn7tIyVz.css  220.15 kB │ gzip: 34.21 kB
+dist/assets/index-CAlSdc28.js   276.03 kB │ gzip: 84.69 kB
+
+✓ built in 294ms
+
+Exit: 0
+
+$ git diff --check
+
+Exit: 0
+
+Final Git review after documentation update
+Working directory: repository root
+
+$ git status --short
+ M README.md
+ M frontend/.gitignore
+ M frontend/package.json
+ M frontend/pnpm-lock.yaml
+ M frontend/src/App.tsx
+ M frontend/src/index.css
+ M frontend/src/vite-env.d.ts
+ M frontend/tsconfig.json
+ M frontend/vite.config.ts
+?? docs/screenshots/
+?? docs/verification-output.txt
+?? docs/verification.md
+?? frontend/.env.example
+?? frontend/playwright.config.ts
+?? frontend/src/App.test.tsx
+?? frontend/src/api/
+?? frontend/src/test/
+?? frontend/src/useShipments.ts
+?? frontend/tests/
+?? frontend/vitest.config.ts
+
+Exit: 0
+
+$ git diff --stat
+ README.md                  |  127 ++++-
+ frontend/.gitignore        |    4 +
+ frontend/package.json      |   22 +-
+ frontend/pnpm-lock.yaml    | 1146 +++++++++++++++++++++++++++++++++++++++++++-
+ frontend/src/App.tsx       |  663 ++++++++++++-------------
+ frontend/src/index.css     |  222 +++++----
+ frontend/src/vite-env.d.ts |    4 +
+ frontend/tsconfig.json     |    2 +-
+ frontend/vite.config.ts    |    2 +-
+ 9 files changed, 1726 insertions(+), 466 deletions(-)
+
+Exit: 0
+
+$ git ls-files --others --exclude-standard
+docs/screenshots/01-form-dark.png
+docs/screenshots/02-loading.png
+docs/screenshots/03-success-dark.png
+docs/screenshots/04-success-light.png
+docs/screenshots/05-list-light.png
+docs/screenshots/06-mobile-form.png
+docs/screenshots/07-empty-mobile.png
+docs/screenshots/08-error-mobile.png
+docs/screenshots/toggle-dark-off.png
+docs/screenshots/toggle-dark-on.png
+docs/screenshots/toggle-light-off.png
+docs/screenshots/toggle-light-on.png
+docs/verification-output.txt
+docs/verification.md
+frontend/.env.example
+frontend/playwright.config.ts
+frontend/src/App.test.tsx
+frontend/src/api/parcels.test.ts
+frontend/src/api/parcels.ts
+frontend/src/test/fixtures.ts
+frontend/src/test/setup.ts
+frontend/src/useShipments.ts
+frontend/tests/browser/parcelbot.spec.ts
+frontend/vitest.config.ts
+
+Exit: 0
+
+$ git diff --cached --name-only
+
+Exit: 0
+
+$ git diff --check
+
+Exit: 0
+
+Locale ru-RU screenshot refresh
+UTC: 2026-11-20T20:17:57.833178+00:00
+Working directory: frontend/
+No production API calls; all browser API responses are mocked.
+Browser environment: LD_LIBRARY_PATH="$PWD/.cache/browser-libs/usr/lib/x86_64-linux-gnu" (ParcelBot only); locale: ru-RU.
+$ corepack pnpm test:browser
+$ playwright test
+[WebServer] (node:5394) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ vite --port 15173
+[WebServer] (node:5448) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:5506) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/parcelbot.spec.ts:42:1 › keyboard journey across both workflows, reload and two themes (1.6s)
+  ✓  2 tests/browser/parcelbot.spec.ts:148:1 › mobile empty/error/retry remains readable in both themes (1.1s)
+  ✓  3 tests/browser/parcelbot.spec.ts:189:1 › both toggle tracks change color and thumb position in both themes (1.5s)
+
+  3 passed (5.8s)
+
+Exit: 0
+$ corepack pnpm typecheck
+$ tsc --noEmit
+
+Exit: 0
+$ git diff --check
+
+Exit: 0
+
+Native date control locale correction
+UTC: 2026-11-20T20:21:43.022208+00:00
+Working directory: frontend/
+Visual inspection: context locale alone left native inputs as MM/DD/YYYY; static local check confirmed LANGUAGE=ru_RU:ru renders DD.MM.YYYY.
+Playwright context locale: ru-RU; browser launch environment: LANGUAGE=ru_RU:ru.
+No production API calls.
+$ corepack pnpm test:browser
+$ playwright test
+[WebServer] (node:6288) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ vite --port 15173
+[WebServer] (node:6342) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:6398) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/browser/parcelbot.spec.ts:42:1 › keyboard journey across both workflows, reload and two themes (1.5s)
+  ✓  2 tests/browser/parcelbot.spec.ts:148:1 › mobile empty/error/retry remains readable in both themes (1.1s)
+  ✓  3 tests/browser/parcelbot.spec.ts:189:1 › both toggle tracks change color and thumb position in both themes (1.4s)
+
+  3 passed (5.4s)
+
+Exit: 0
+$ corepack pnpm typecheck
+$ tsc --noEmit
+
+Exit: 0
+$ git diff --check
+
+Exit: 0
