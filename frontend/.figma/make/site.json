@@ -1,0 +1,10 @@
+{
+  "description": "Classify and plan parcel shipments, save delivery details, and view scheduled parcels by date with clear status and validation feedback.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
